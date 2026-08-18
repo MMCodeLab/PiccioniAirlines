@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piccioni Airlines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#122A36;
+    --navy-2:#1B3A4B;
+    --cream:#F3ECD8;
+    --cream-2:#EAE0C4;
+    --mustard:#D9A441;
+    --stamp-red:#B8433A;
+    --ink:#1B2A2F;
+    --line:#C9BFA0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(217,164,65,0.18), transparent 55%),
+      radial-gradient(ellipse at 90% 0%, rgba(243,236,216,0.08), transparent 45%),
+      var(--navy);
+    color:var(--cream);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  a,button,input{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--mustard); outline-offset:2px;}
+
+  .topbar{
+    display:flex; flex-direction:column; align-items:center;
+    padding:38px 20px 24px;
+    text-align:center;
+  }
+  .logo{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:clamp(32px, 6vw, 52px);
+    letter-spacing:1px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .logo span{color:var(--cream);}
+  .logo em{
+    font-style:normal;
+    color:var(--mustard);
+    font-weight:600;
+  }
+  .tagline{
+    margin-top:6px;
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--mustard);
+    opacity:0.85;
+  }
+
+  main{max-width:720px; margin:0 auto; padding:0 18px;}
+
+  /* --- TICKET --- */
+  .board-wrap{display:flex; justify-content:center; margin-top:10px;}
+  .ticket{
+    position:relative;
+    width:100%;
+    background:var(--cream);
+    color:var(--ink);
+    border-radius:var(--radius);
+    display:flex;
+    box-shadow:0 20px 40px rgba(0,0,0,0.35);
+    overflow:visible;
+  }
+  .ticket-main{
+    flex:1 1 auto;
+    padding:26px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .ticket-row.brand{
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom:2px solid var(--navy-2);
+    padding-bottom:12px;
+  }
+  .brand-mark{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    background:var(--navy-2);
+    color:var(--cream);
+    padding:4px 12px;
+    border-radius:6px;
+  }
+  .flight-no, .stub-flight{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    letter-spacing:1px;
+  }
+  .field{display:flex; flex-direction:column; gap:6px; flex:1;}
+  .field label{
+    font-size:11px; letter-spacing:1.5px; font-weight:600;
+    color:var(--navy-2); text-transform:uppercase;
+  }
+  .field input{
+    border:none; border-bottom:2px solid var(--line);
+    background:transparent;
+    padding:6px 2px;
+    font-size:16px;
+    color:var(--ink);
+  }
+  .field input:focus{border-bottom-color:var(--stamp-red);}
+  .field-row{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap;}
+  .plane-icon{font-size:20px; padding-bottom:8px; opacity:0.7;}
+  .gate-value{
+    font-family:'Space Mono', monospace;
+    font-weight:700; font-size:16px; padding:6px 2px;
+    border-bottom:2px solid var(--line);
+  }
+
+  /* perforated divider */
+  .ticket-stub{
+    flex:0 0 190px;
+    position:relative;
+    background:var(--cream-2);
+    padding:26px 18px;
+    display:flex; flex-direction:column; align-items:center;
+    gap:14px;
+    text-align:center;
+    border-left:2px dashed var(--line);
+  }
+  .ticket-stub::before, .ticket-stub::after{
+    content:"";
+    position:absolute; left:-13px;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--navy);
+  }
+  .ticket-stub::before{top:-13px;}
+  .ticket-stub::after{bottom:-13px;}
+  .stub-label{font-size:10px; letter-spacing:1.5px; color:var(--navy-2); font-weight:600;}
+  .barcode{
+    width:100%; height:34px;
+    background:repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px);
+    opacity:0.75;
+  }
+  .btn-confirm{
+    margin-top:auto;
+    background:var(--stamp-red);
+    color:var(--cream);
+    border:none;
+    padding:12px 14px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-confirm:hover{transform:translateY(-2px); background:#9c3a32;}
+
+  .stamp{
+    position:absolute;
+    top:20px; right:30px;
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:2px;
+    color:var(--stamp-red);
+    border:4px solid var(--stamp-red);
+    border-radius:8px;
+    padding:6px 14px;
+    transform:rotate(-14deg) scale(0);
+    opacity:0;
+    pointer-events:none;
+    transition:transform .45s cubic-bezier(.2,1.6,.4,1), opacity .3s ease;
+  }
+  .stamp.show{transform:rotate(-14deg) scale(1); opacity:0.92;}
+  @media (prefers-reduced-motion: reduce){
+    .stamp{transition:none;}
+  }
+
+  /* --- ACTIONS --- */
+  .actions{
+    margin-top:26px;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:center;
+  }
+  .btn-secondary{
+    background:transparent;
+    border:2px solid var(--mustard);
+    color:var(--mustard);
+    padding:10px 18px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn-secondary:hover{background:rgba(217,164,65,0.12);}
+  .status-text{
+    width:100%;
+    text-align:center;
+    font-size:13px;
+    color:var(--cream);
+    opacity:0.75;
+    max-width:520px;
+    margin:6px auto 0;
+  }
+
+  .settings{
+    max-width:520px; margin:22px auto 0;
+    background:rgba(243,236,216,0.06);
+    border:1px solid rgba(243,236,216,0.18);
+    border-radius:10px;
+    padding:4px 16px 14px;
+  }
+  .settings summary{
+    cursor:pointer; padding:10px 0;
+    font-size:13px; font-weight:600; color:var(--mustard);
+  }
+  .settings-body{display:flex; flex-direction:column; gap:10px;}
+  .settings .field input{color:var(--cream); border-bottom-color:rgba(243,236,216,0.35);}
+  .btn-secondary.small{padding:7px 14px; font-size:13px; align-self:flex-start;}
+
+  /* --- HISTORY --- */
+  .history{margin-top:48px;}
+  .history h2{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-size:22px; letter-spacing:1px; color:var(--mustard);
+    border-bottom:1px solid rgba(243,236,216,0.2);
+    padding-bottom:8px;
+  }
+  .history-list{display:flex; flex-direction:column; gap:10px; margin-top:14px;}
+  .history-empty{opacity:0.6; font-size:14px;}
+  .history-item{
+    background:var(--navy-2);
+    border-radius:10px;
+    padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    flex-wrap:wrap;
+  }
+  .history-item .hi-main{display:flex; flex-direction:column; gap:2px;}
+  .history-item .hi-flight{font-family:'Space Mono', monospace; color:var(--mustard); font-size:12px;}
+  .history-item .hi-route{font-size:14px;}
+  .history-item .hi-link{
+    color:var(--cream); font-size:13px; text-decoration:underline; cursor:pointer;
+    background:none; border:none; font-weight:600;
+  }
+
+  footer{
+    max-width:720px; margin:50px auto 0; padding:0 18px;
+    font-size:12px; opacity:0.55; text-align:center; line-height:1.5;
+  }
+
+  @media (max-width:560px){
+    .ticket{flex-direction:column;}
+    .ticket-stub{
+      border-left:none; border-top:2px dashed var(--line);
+      flex-direction:row; flex-wrap:wrap; flex:1;
+    }
+    .ticket-stub::before{left:50%; top:-13px; transform:translateX(-50%);}
+    .ticket-stub::after{left:50%; bottom:auto; top:-13px; display:none;}
+    .barcode{order:3; flex-basis:100%;}
+    .btn-confirm{flex-basis:100%;}
+    .stamp{top:auto; bottom:-10px; right:16px; font-size:20px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><span>🕊️ PICCIONI</span> <em>AIRLINES</em></div>
+  <div class="tagline">Voli low-cost · bagaglio: solo il tuo umore</div>
+</header>
+
+<main>
+  <section class="board-wrap">
+    <form id="bookingForm" class="ticket" novalidate>
+      <div class="ticket-main">
+        <div class="ticket-row brand">
+          <div class="brand-mark">PA</div>
+          <div class="flight-no" id="flightNo">PA-000</div>
+        </div>
+
+        <div class="field">
+          <label for="nome">Passeggero</label>
+          <input id="nome" required placeholder="Il tuo nome" autocomplete="off">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="partenza">Da (partenza)</label>
+            <input id="partenza" required placeholder="Indirizzo o città">
+          </div>
+          <div class="plane-icon">🕊️</div>
+          <div class="field">
+            <label for="arrivo">A (arrivo)</label>
+            <input id="arrivo" required placeholder="Indirizzo o città">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="data">Data</label>
+            <input id="data" type="date" required>
+          </div>
+          <div class="field">
+            <label for="ora">Ora</label>
+            <input id="ora" type="time" required>
+          </div>
+          <div class="field">
+            <label for="gate">Gate</label>
+            <div class="gate-value" id="gateValue">—</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="note">Note (facoltativo)</label>
+          <input id="note" placeholder="Bagagli, richieste particolari...">
+        </div>
+      </div>
+
+      <div class="ticket-stub">
+        <div class="stub-label">Carta d'imbarco</div>
+        <div class="stub-flight" id="stubFlight">PA-000</div>
+        <div class="barcode"></div>
+        <button type="submit" class="btn-confirm">Prenota il volo</button>
+      </div>
+
+      <div class="stamp" id="stamp">CONFERMATO</div>
+    </form>
+  </section>
+
+  <section class="actions" id="actionsSection" hidden>
+    <button id="mapsBtn" class="btn-secondary">Apri il tragitto su Maps</button>
+    <button id="notifyBtn" class="btn-secondary">Invia notifica al pilota</button>
+    <p class="status-text" id="notifyStatus">Il messaggio Telegram parte solo se hai collegato il backend (vedi Impostazioni qui sotto). Finché non lo colleghi, il pulsante apre comunque il tragitto su Maps.</p>
+  </section>
+
+  <details class="settings">
+    <summary>Impostazioni backend notifiche</summary>
+    <div class="settings-body">
+      <div class="field">
+        <label for="apiEndpoint">URL della funzione /api/notify (dopo il deploy)</label>
+        <input id="apiEndpoint" placeholder="https://tuo-progetto.vercel.app/api/notify">
+      </div>
+      <button id="saveEndpoint" class="btn-secondary small">Salva</button>
+      <p class="status-text">Questo URL resta solo su questo dispositivo/browser.</p>
+    </div>
+  </details>
+
+  <section class="history">
+    <h2>Voli prenotati</h2>
+    <div id="historyList" class="history-list"></div>
+  </section>
+</main>
+
+<footer>
+  Base della progressive web app "Piccioni Airlines". Questa è l'anteprima interattiva:<br>
+  per renderla un'app installabile per davvero servono ancora un manifest.json, un service worker e un hosting reale — li aggiungiamo nel prossimo passaggio.
+</footer>
+
+<script>
+(function(){
+  const GATES = ["Nido 3","Trespolo 7","Cornicione 2","Ramo 5","Piazza 1","Grondaia 9"];
+  const form = document.getElementById('bookingForm');
+  const flightNoEl = document.getElementById('flightNo');
+  const stubFlightEl = document.getElementById('stubFlight');
+  const gateEl = document.getElementById('gateValue');
+  const stamp = document.getElementById('stamp');
+  const actionsSection = document.getElementById('actionsSection');
+  const mapsBtn = document.getElementById('mapsBtn');
+  const notifyBtn = document.getElementById('notifyBtn');
+  const historyList = document.getElementById('historyList');
+  const apiEndpointInput = document.getElementById('apiEndpoint');
+  const saveEndpointBtn = document.getElementById('saveEndpoint');
+  const notifyStatus = document.getElementById('notifyStatus');
+
+  let currentFlight = null;
+
+  // --- endpoint del backend, salvato solo su questo dispositivo ---
+  (async function loadEndpoint(){
+    try{
+      const res = await window.storage.get('pa_api_endpoint', false);
+      if(res && res.value) apiEndpointInput.value = res.value;
+    }catch(e){ /* nessun endpoint salvato ancora */ }
+  })();
+  saveEndpointBtn.addEventListener('click', async () => {
+    try{
+      await window.storage.set('pa_api_endpoint', apiEndpointInput.value.trim(), false);
+      notifyStatus.textContent = "Endpoint salvato su questo dispositivo.";
+    }catch(e){
+      notifyStatus.textContent = "Non sono riuscito a salvare l'endpoint.";
+    }
+  });
+
+  function randomFlightNo(){
+    return "PA-" + (100 + Math.floor(Math.random()*900));
+  }
+  function randomGate(){
+    return GATES[Math.floor(Math.random()*GATES.length)];
+  }
+  function rollTicket(){
+    const fn = randomFlightNo();
+    flightNoEl.textContent = fn;
+    stubFlightEl.textContent = fn;
+    gateEl.textContent = randomGate();
+  }
+  rollTicket();
+
+  function mapsLink(origin, destination){
+    return "https://www.google.com/maps/dir/?api=1&origin=" +
+      encodeURIComponent(origin) + "&destination=" + encodeURIComponent(destination);
+  }
+
+  async function loadBookings(){
+    try{
+      const res = await window.storage.get('pa_bookings', true);
+      return res && res.value ? JSON.parse(res.value) : [];
+    }catch(e){
+      return [];
+    }
+  }
+  async function saveBookings(list){
+    try{
+      await window.storage.set('pa_bookings', JSON.stringify(list), true);
+    }catch(e){
+      console.error('Storage error', e);
+    }
+  }
+
+  function renderHistory(list){
+    historyList.innerHTML = "";
+    if(!list.length){
+      historyList.innerHTML = '<p class="history-empty">Nessun volo ancora prenotato. Il cielo aspetta.</p>';
+      return;
+    }
+    list.slice().reverse().forEach(b => {
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `
+        <div class="hi-main">
+          <span class="hi-flight">${b.flightNo} · gate ${b.gate}</span>
+          <span class="hi-route"><strong>${escapeHtml(b.nome)}</strong> — ${escapeHtml(b.partenza)} → ${escapeHtml(b.arrivo)} (${b.data} ${b.ora})</span>
+        </div>
+        <button class="hi-link" data-o="${escapeAttr(b.partenza)}" data-d="${escapeAttr(b.arrivo)}">Apri su Maps</button>
+      `;
+      historyList.appendChild(item);
+    });
+    historyList.querySelectorAll('.hi-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.open(mapsLink(btn.dataset.o, btn.dataset.d), '_blank');
+      });
+    });
+  }
+  function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escapeAttr(s){ return escapeHtml(s); }
+
+  loadBookings().then(renderHistory);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('nome').value.trim();
+    const partenza = document.getElementById('partenza').value.trim();
+    const arrivo = document.getElementById('arrivo').value.trim();
+    const data = document.getElementById('data').value;
+    const ora = document.getElementById('ora').value;
+    const note = document.getElementById('note').value.trim();
+    if(!nome || !partenza || !arrivo || !data || !ora) return;
+
+    currentFlight = {
+      id: Date.now().toString(36),
+      nome, partenza, arrivo, data, ora, note,
+      flightNo: flightNoEl.textContent,
+      gate: gateEl.textContent,
+      ts: new Date().toISOString()
+    };
+
+    const list = await loadBookings();
+    list.push(currentFlight);
+    await saveBookings(list);
+    renderHistory(list);
+
+    stamp.classList.remove('show'); void stamp.offsetWidth;
+    stamp.classList.add('show');
+    actionsSection.hidden = false;
+    actionsSection.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+    rollTicket();
+  });
+
+  mapsBtn.addEventListener('click', () => {
+    if(!currentFlight) return;
+    window.open(mapsLink(currentFlight.partenza, currentFlight.arrivo), '_blank');
+  });
+
+  notifyBtn.addEventListener('click', async () => {
+    if(!currentFlight) return;
+
+    // Il tragitto su Maps si apre sempre, a prescindere dalla notifica Telegram.
+    const link = mapsLink(currentFlight.partenza, currentFlight.arrivo);
+    window.open(link, '_blank');
+
+    const endpoint = apiEndpointInput.value.trim();
+    notifyBtn.disabled = true;
+
+    if(!endpoint){
+      notifyStatus.textContent = "Nessun backend collegato: ho aperto solo Maps. Configura l'endpoint qui sotto per far partire anche il Telegram.";
+      notifyBtn.textContent = "Maps aperto ✓";
+      setTimeout(() => { notifyBtn.textContent = "Invia notifica al pilota"; notifyBtn.disabled = false; }, 2500);
+      return;
+    }
+
+    notifyStatus.textContent = "Invio in corso...";
+    try{
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: currentFlight.nome,
+          partenza: currentFlight.partenza,
+          arrivo: currentFlight.arrivo,
+          mapsLink: link
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if(res.ok && data.ok){
+        notifyStatus.textContent = "Messaggio Telegram inviato al pilota ✓";
+        notifyBtn.textContent = "Notifica inviata ✓";
+      } else {
+        notifyStatus.textContent = "Il backend ha risposto con un errore: " + (data.error || res.status);
+        notifyBtn.textContent = "Errore invio";
+      }
+    }catch(err){
+      notifyStatus.textContent = "Non sono riuscito a contattare il backend: " + err.message;
+      notifyBtn.textContent = "Errore invio";
+    }
+    setTimeout(() => { notifyBtn.textContent = "Invia notifica al pilota"; notifyBtn.disabled = false; }, 3000);
+  });
+})();
+</script>
+
+</body>
+</html>
