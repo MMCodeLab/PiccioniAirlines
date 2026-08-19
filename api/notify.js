@@ -15,6 +15,16 @@
 // liberamente a chiunque gli abbia scritto almeno un messaggio (anche solo /start).
 
 export default async function handler(req, res) {
+  // Permette al sito (che vive su un indirizzo diverso da questo backend)
+  // di contattare questa funzione senza essere bloccato dal browser (CORS).
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Metodo non consentito, usa POST.' });
   }
