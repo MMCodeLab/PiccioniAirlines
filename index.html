@@ -127,10 +127,18 @@
   .field input:focus{border-bottom-color:var(--stamp-red);}
   .field-row{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap;}
   .plane-icon{font-size:20px; padding-bottom:8px; opacity:0.7;}
+  .row-datetime{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap:12px;
+    align-items:end;
+  }
+  .row-datetime .field{min-width:0;}
   .gate-value{
     font-family:'Space Mono', monospace;
     font-weight:700; font-size:16px; padding:6px 2px;
     border-bottom:2px solid var(--line);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
 
   /* perforated divider */
@@ -265,16 +273,40 @@
   }
 
   @media (max-width:560px){
+    .topbar{padding:22px 16px 18px;}
+    .logo{gap:8px; font-size:clamp(24px, 7vw, 32px);}
+    .logo-img{width:40px; height:40px; border-radius:9px;}
+    .tagline{font-size:11px; letter-spacing:1px; margin-top:4px;}
+
+    main{padding:0 12px;}
+    .ticket{border-radius:12px;}
+    .ticket-main{padding:18px 16px; gap:13px;}
+    .ticket-row.brand{padding-bottom:9px;}
+    .brand-mark{font-size:18px; padding:3px 10px;}
+    .flight-no, .stub-flight{font-size:14px;}
+
+    .field-row{gap:10px;}
+    .field label{font-size:10px; letter-spacing:1px;}
+    .field input{font-size:15px; padding:5px 2px;}
+    .row-datetime{grid-template-columns: 0.9fr 0.9fr 1.2fr;}
+    .gate-value{font-size:14px;}
+    .plane-icon{font-size:16px; padding-bottom:6px;}
+
     .ticket{flex-direction:column;}
     .ticket-stub{
       border-left:none; border-top:2px dashed var(--line);
       flex-direction:row; flex-wrap:wrap; flex:1;
+      padding:18px 16px; gap:12px;
     }
     .ticket-stub::before{left:50%; top:-13px; transform:translateX(-50%);}
     .ticket-stub::after{left:50%; bottom:auto; top:-13px; display:none;}
-    .barcode{order:3; flex-basis:100%;}
-    .btn-confirm{flex-basis:100%;}
+    .barcode{order:3; flex-basis:100%; height:28px;}
+    .btn-confirm{flex-basis:100%; padding:13px 14px; font-size:15px;}
     .stamp{top:auto; bottom:-10px; right:16px; font-size:20px;}
+
+    .actions{margin-top:20px; gap:10px;}
+    .btn-secondary{padding:11px 16px; font-size:14px; flex:1 1 auto;}
+    .history{margin-top:34px;}
   }
 </style>
 </head>
@@ -311,7 +343,7 @@
           </div>
         </div>
 
-        <div class="field-row">
+        <div class="field-row row-datetime">
           <div class="field">
             <label for="data">Data</label>
             <input id="data" type="date" required>
